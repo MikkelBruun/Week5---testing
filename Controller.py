@@ -17,7 +17,7 @@ class Controller(object):
         self.url_file_name = url_file_name
     
     #Overwrites the file to report succesfull downloads
-    def set_repor_file(self,report_file_name : str) -> None:
+    def set_report_file(self,report_file_name : str) -> None:
         self.report_file_name = report_file_name
     
     #Overwrites download destination

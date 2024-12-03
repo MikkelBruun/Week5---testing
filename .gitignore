@@ -3,5 +3,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
+**/*.xlsx
 Week4/Data_set.txt
-Week5/files/
+files/
