@@ -7,7 +7,7 @@ class Downloader(object):
     #uses a url link and a destination to download a file. Optionally one can use an alt url if applicaple
     #Returns success is file got downlaoded
     def download(self,url : str, destination_path : str, alt_url : Optional[str] = None) -> bool:
-
+        print("DOWNLOAD")
         success = True
         if not url and not alt_url:
             return False
@@ -17,7 +17,8 @@ class Downloader(object):
             #Checks if the response was a pdf file
             if not "application/pdf" in response.headers.get("content-type"):
                 raise Exception("Not pdf type")
-        except:
+        except Exception as e:
+            print(e)
             success = False
         
         #If it fails to download try the alternative url

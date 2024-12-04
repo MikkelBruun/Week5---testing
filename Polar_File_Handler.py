@@ -23,16 +23,16 @@ class FileHandler(object):
             Path(destination).mkdir(exist_ok=True)
 
             #Dictionaries are not necesarily thread safe but appending to it is so this is fine. If more complicated tasks where needed you would use a mutex lock etc
-            finished_dict["BRnum"].append(name)
+            ## RETTELSE finished_dict["BRnum"].append(name)
             downloaded = downloader.download(url=link,destination_path=os.path.join(destination, name+".pdf"), alt_url=alt_link)
             if downloaded:
-                finished_dict["pdf_downloaded"].append("yes")
+                finished_dict[name]="yes" ## RETTELSE
             else:
-                finished_dict["pdf_downloaded"].append("no")
+                finished_dict[name]="no" ## RETTELSE
             queue.task_done()
 
     #Starts downlaoding files from urls listed in url_file which will be placed in the destination, and reported in the meta file
-    def start_download(self, url_file : str,meta_file : str,destination : str) -> None:
+    def start_download(self, url_file : str,meta_file : str,destination : str, max_rows=20) -> None:
 
         file_data = pl.read_excel(source=url_file, columns= ["BRnum", "Pdf_URL", "Report Html Address"])
         
@@ -53,13 +53,14 @@ class FileHandler(object):
         queue = Queue()
 
         #Creates a dictionary of downloads
-        finished_dict = {ID:[],"pdf_downloaded":[]}
+        finished_dict = {} ## RETTELSE
+        #{ID:[],"pdf_downloaded":[]}
 
         #counter to only download 10 files
         j = 0
         #We thru each br number and starts a download
         for row in file_data.rows(named=True):
-            if j == 20:
+            if j == max_rows:
                 break
             alt_link = row["Report Html Address"]
             link = row["Pdf_URL"]
@@ -74,8 +75,11 @@ class FileHandler(object):
 
         queue.join()
         #Creates a dataframe from the dictionary of downloads
-        finished_data_frame = pl.from_dict(finished_dict)
-
+        ## RETTELSE
+        #finished_data_frame = pl.from_dict(finished_dict)
+        _finished_dict = {ID: [key for key in finished_dict], "pdf_downloaded": [finished_dict[key] for key in finished_dict]}
+        finished_data_frame = pl.from_dict(_finished_dict)
+        ## /RETTELSE
         if not report_data.is_empty():
             finished_data_frame = pl.concat([finished_data_frame,report_data],rechunk = True)
         with Workbook(meta_file) as file:
