@@ -1,8 +1,6 @@
 **/.venv/
-**/*.csv
 __pycache__/
 *.py[cod]
 *$py.class
-**/*.xlsx
 Week4/Data_set.txt
 files/
